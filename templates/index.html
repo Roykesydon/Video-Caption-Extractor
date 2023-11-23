@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Caption Extractor</title>
+</head>
+
+<body>
+
+    <h2>Video Caption Extractor</h2>
+
+    <div>
+        <div>
+            How to use:
+            <button id="changeLanguageButton" onclick="changeLanguage()">中文</button>
+        </div>
+        <ol style="display: block;" id="english_instructions">
+            <li>Choose a video file</li>
+            <li>Choose a language</li>
+            <li>play the video below the window (might need to scroll down)</li>
+            <li>drag the mouse on the canvas to select the area of the video you want to detect</li>
+            <li>drag the video timeline to make sure the red box is appropriate</li>
+            <li>Click "Upload"</li>
+            <li>Wait for the video to be uploaded and detected</li>
+        </ol>
+        <!-- chinese version -->
+        <ol style="display: none;" id="chinese_instructions">
+            <li>選擇影片檔案</li>
+            <li>選擇語言</li>
+            <li>播放視窗下方的影片 (可能需要往下捲動)</li>
+            <li>在畫布上拖曳滑鼠以選擇你想要偵測的影片區域</li>
+            <li>拖曳影片時間軸以確保紅色方框的位置正確</li>
+            <li>點擊 "Upload"</li>
+            <li>等待影片上傳並偵測</li>
+        </ol>
+    </div>
+
+    <form action="/upload_and_detect" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="videoFile">Choose video file:</label>
+            <input type="file" id="videoFile" name="videoFile" accept="video/*">
+        </div>
+        <input type="hidden" name="coordinates" id="coordinates" value="">
+        <br />
+        <div>
+            <label for="language">Choose language:</label>
+            <select id="language" name="language">
+                <option value="simplified">簡體中文 + English</option>
+                <option value="traditional">繁體中文 + English</option>
+                <option value="english">English</option>
+            </select>
+        </div>
+        <br />
+        <input type="submit" value="Upload">
+        <br />
+        <!-- loading message -->
+
+        <div id="loading" style="display: none;">
+            <p>Uploading and detecting...</p>
+        </div>
+    </form>
+
+    <br>
+
+    <canvas id="videoCanvas" width="640" height="480"></canvas>
+    <script src="{{url_for('static', filename='script.js')}}"></script>
+
+    <script>
+        window.onload = function() {
+            document.getElementById("videoFile").value = "";
+        };
+
+        function showLoading() {
+            document.getElementById("loading").style.display = "block";
+        }
+        // show loading message when submit button is clicked
+        document.querySelector("input[type=submit]").addEventListener("click", showLoading);
+
+        function changeLanguage() {
+            var english_instructions = document.getElementById("english_instructions");
+            var chinese_instructions = document.getElementById("chinese_instructions");
+            var changeLanguageButton = document.getElementById("changeLanguageButton");
+            if (english_instructions.style.display === "none") {
+                english_instructions.style.display = "block";
+                chinese_instructions.style.display = "none";
+                changeLanguageButton.innerHTML = "中文";
+            } else {
+                english_instructions.style.display = "none";
+                chinese_instructions.style.display = "block";
+                changeLanguageButton.innerHTML = "English";
+            }
+        }
+    </script>
+
+</body>
+
+</html>
